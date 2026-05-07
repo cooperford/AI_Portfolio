@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Skill - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-sm btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold mb-2">
+                        <i class="fas fa-calendar-check text-primary"></i> Book This Skill
+                    </h2>
+                    <p class="text-muted mb-4">
+                        for <strong>{{ skill.title }}</strong>
+                    </p>
+
+                    <!-- Skill Info Box -->
+                    <div class="alert alert-info mb-4">
+                        <strong>{{ skill.title }}</strong><br>
+                        Instructor: <strong>{{ skill.owner.username }}</strong><br>
+                        Price: {% if skill.price > 0 %}<strong>${{ skill.price }}/hour</strong>{% else %}<span
+                            class="badge bg-success">FREE</span>{% endif %}<br>
+                        Contact: {{ skill.get_contact_preference_display }}
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Requested Date/Time -->
+                        <div class="mb-4">
+                            <label for="{{ form.requested_date.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-calendar"></i> When do you want to meet? *
+                            </label>
+                            {{ form.requested_date }}
+                            {% if form.requested_date.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.requested_date.errors.0 }}</div>
+                            {% endif %}
+                            <small class="d-block mt-2 text-muted">
+                                Select the date and time you'd like to have this session
+                            </small>
+                        </div>
+
+                        <!-- Message -->
+                        <div class="mb-4">
+                            <label for="{{ form.message.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-comment"></i> Message to Instructor *
+                            </label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.message.errors.0 }}</div>
+                            {% endif %}
+                            <small class="d-block mt-2 text-muted">
+                                Tell the instructor about your experience level, what you want to learn,
+                                and any other relevant details
+                            </small>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                <i class="fas fa-check-circle"></i> Send Booking Request
+                            </button>
+                            <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Info -->
+                    <div class="alert alert-info mt-4">
+                        <strong>
+                            <i class="fas fa-info-circle"></i> How this works:
+                        </strong>
+                        <ol class="mb-0 ms-2">
+                            <li>Send a booking request with your preferred time</li>
+                            <li>{{ skill.owner.username }} will review your request</li>
+                            <li>If approved, you'll be notified and can arrange details</li>
+                            <li>After the session, leave a review!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

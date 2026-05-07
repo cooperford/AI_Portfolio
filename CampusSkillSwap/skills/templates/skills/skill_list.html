@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Skills - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="mb-5">
+        <h1 class="fw-bold mb-2">
+            <i class="fas fa-list text-primary"></i> Browse Skills
+        </h1>
+        <p class="text-muted lead">
+            Explore {{ skills.count }} available skills shared by our community
+        </p>
+    </div>
+
+    <!-- Search & Filter Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8">
+            <form method="GET" class="d-flex gap-2">
+                <input type="text" name="query" class="form-control"
+                    placeholder="Search skills by title or description..." value="{{ query }}" id="searchInput">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+        <div class="col-lg-4">
+            <form method="GET" class="d-flex gap-2">
+                <select name="category" class="form-select" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    {% for value, label in search_form.category.field.choices %}
+                    {% if value %}
+                    <option value="{{ value }}" {% if value == selected_category %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Skills Display -->
+    {% if skills %}
+    <div class="row">
+        {% for skill in skills %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm skill-card hover-shadow transition">
+                <!-- Top Bar with Category -->
+                <div class="card-header bg-light border-bottom">
+                    <span class="badge bg-primary">
+                        {{ skill.get_category_display }}
+                    </span>
+                    <span class="badge bg-secondary float-end">
+                        {{ skill.get_availability_status_display }}
+                    </span>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body">
+                    <!-- Title -->
+                    <h5 class="card-title fw-bold mb-2">
+                        <a href="{% url 'skill_detail' skill.pk %}" class="text-decoration-none">
+                            {{ skill.title }}
+                        </a>
+                    </h5>
+
+                    <!-- Description -->
+                    <p class="card-text text-muted small mb-3">
+                        {{ skill.description|truncatewords:20 }}
+                    </p>
+
+                    <!-- Rating -->
+                    <div class="mb-3 skill-rating">
+                        {% if skill.average_rating > 0 %}
+                        {% for star in "12345" %}
+                        {% if forloop.counter <= skill.average_rating %} <i class="fas fa-star text-warning"></i>
+                            {% else %}
+                            <i class="fas fa-star text-muted"></i>
+                            {% endif %}
+                            {% endfor %}
+                            <span class="fw-bold ms-2">{{ skill.average_rating }}</span>
+                            <span class="text-muted small">({{ skill.reviews.count }})</span>
+                            {% else %}
+                            <span class="text-muted small">
+                                <i class="fas fa-star text-muted"></i> No reviews yet
+                            </span>
+                            {% endif %}
+                    </div>
+
+                    <!-- Price -->
+                    <div class="mb-3">
+                        {% if skill.price > 0 %}
+                        <span class="skill-price">${{ skill.price }}</span>
+                        <span class="text-muted small">/ hour</span>
+                        {% else %}
+                        <span class="badge bg-success">FREE</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Owner Info -->
+                    <div class="d-flex align-items-center border-top pt-3">
+                        <small class="text-muted">
+                            by <strong>
+                                <a href="{% url 'profile' skill.owner.username %}" class="text-decoration-none">
+                                    {{ skill.owner.username }}
+                                </a>
+                            </strong>
+                        </small>
+                        <small class="text-muted ms-auto">
+                            <i class="fas fa-calendar"></i>
+                            {{ skill.created_at|date:"M d, Y" }}
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-sm btn-primary w-100">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- No Skills Found -->
+    <div class="alert alert-info text-center py-5">
+        <i class="fas fa-search fa-3x mb-3 d-block text-primary"></i>
+        <h5 class="fw-bold">No skills found</h5>
+        <p class="text-muted mb-3">
+            {% if query or selected_category %}
+            Try adjusting your search or filter criteria
+            {% else %}
+            No skills have been posted yet.
+            <a href="{% url 'skill_create' %}">Be the first to post one!</a>
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Help Section -->
+    <div class="row mt-5 pt-5 border-top">
+        <div class="col-md-4 text-center mb-4">
+            <i class="fas fa-lightbulb fa-2x text-primary mb-3"></i>
+            <h6 class="fw-bold">Can't find what you're looking for?</h6>
+            <p class="text-muted small">
+                <a href="{% url 'skill_create' %}">Post a request</a> and let others know what you want to learn
+            </p>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <i class="fas fa-star fa-2x text-warning mb-3"></i>
+            <h6 class="fw-bold">Want to share your expertise?</h6>
+            <p class="text-muted small">
+                <a href="{% url 'skill_create' %}">Post a skill</a> and help other students learn
+            </p>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <i class="fas fa-users fa-2x text-success mb-3"></i>
+            <h6 class="fw-bold">Questions or feedback?</h6>
+            <p class="text-muted small">
+                Contact us at support@skillswap.local
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

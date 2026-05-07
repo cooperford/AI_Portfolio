@@ -1,0 +1,41 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}Projects | Cooper Ford{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">Projects</p>
+            <h1>Projects</h1>
+            <p class="lead">A growing collection of automation, AI, and Django work with practical business applications.</p>
+        </div>
+        <div class="card-grid">
+            {% for project in projects %}
+                <article class="card">
+                    {% if project.image %}
+                        <img class="project-card-image" src="{% static project.image %}" alt="{{ project.title }} screenshot">
+                    {% endif %}
+                    {% if project.video %}
+                        <video class="project-card-image" src="{% static project.video %}" muted playsinline preload="metadata"></video>
+                    {% endif %}
+                    {% if project.preview_label %}
+                        <div class="project-code-preview">
+                            <span>{{ project.preview_label }}</span>
+                        </div>
+                    {% endif %}
+                    <h2>{{ project.title }}</h2>
+                    <p>{{ project.summary }}</p>
+                    <div class="tag-row">
+                        {% for technology in project.technologies %}
+                            <span>{{ technology }}</span>
+                        {% endfor %}
+                    </div>
+                    <a class="text-link" href="{% url 'portfolio:project_detail' project.slug %}">View details</a>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} | Cooper Ford{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container narrow">
+        <a class="back-link" href="{% url 'portfolio:projects' %}">Back to projects</a>
+        <p class="eyebrow">Project Detail</p>
+        <h1>{{ project.title }}</h1>
+        <p class="lead">{{ project.summary }}</p>
+        {% if project.image %}
+            <img class="project-detail-image" src="{% static project.image %}" alt="{{ project.title }} screenshot">
+        {% endif %}
+        {% if project.video %}
+            <video class="project-detail-image" src="{% static project.video %}" controls preload="metadata"></video>
+        {% endif %}
+        {% if project.preview_label %}
+            <div class="project-code-preview project-detail-preview">
+                <span>{{ project.preview_label }}</span>
+            </div>
+        {% endif %}
+        <div class="content-block">
+            <h2>Overview</h2>
+            <p>{{ project.description }}</p>
+        </div>
+        {% if project.highlights %}
+            <div class="content-block">
+                <h2>Key Features</h2>
+                <ul>
+                    {% for highlight in project.highlights %}
+                        <li>{{ highlight }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="content-block">
+            <h2>Technologies</h2>
+            <div class="tag-row">
+                {% for technology in project.technologies %}
+                    <span>{{ technology }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% if project.source_url %}
+            <div class="content-block">
+                <h2>Project Link</h2>
+                <p><a href="{{ project.source_url }}" target="_blank" rel="noreferrer">View the project repository</a></p>
+            </div>
+        {% endif %}
+        {% if project.app_url_name %}
+            <div class="content-block">
+                <h2>Try It</h2>
+                <p>This project is available as an interactive app inside the portfolio.</p>
+                <p><a class="button" href="{% url project.app_url_name %}">Open {{ project.title }}</a></p>
+            </div>
+        {% endif %}
+        {% if project.live_preview_url %}
+            <div class="content-block">
+                <h2>Live Preview</h2>
+                <p>CampusSkillSwap runs as its own Django app inside this portfolio preview.</p>
+                <p><a href="{{ project.live_preview_url }}" target="_blank" rel="noreferrer">Open CampusSkillSwap in a new tab</a></p>
+            </div>
+            <iframe class="project-live-preview" src="{{ project.live_preview_url }}" title="{{ project.title }} live preview"></iframe>
+        {% endif %}
+        {% if not project.image and not project.video and not project.preview_label %}
+            <div class="media-placeholder">
+                <span>Project screenshot placeholder</span>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

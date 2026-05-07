@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="fw-bold mb-2">
+            <i class="fas fa-pencil-alt text-primary"></i> {{ title }}
+        </h1>
+        <p class="text-muted">
+            Share your knowledge with the Campus SkillSwap community
+        </p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <form method="POST" class="needs-validation">
+                        {% csrf_token %}
+
+                        <!-- Title -->
+                        <div class="mb-4">
+                            <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-heading text-primary"></i> Skill Title *
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                            <small class="d-block mt-2 text-muted">
+                                Examples: "Learn Python Programming", "Guitar Lessons for Beginners", "Graphic Design
+                                Basics"
+                            </small>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-4">
+                            <label for="{{ form.category.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-tag text-primary"></i> Category *
+                            </label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-align-left text-primary"></i> Description *
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                            <small class="d-block mt-2 text-muted">
+                                Describe what you'll teach, what students will learn, prerequisites, and any other
+                                details.
+                            </small>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="{{ form.price.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign text-primary"></i> Price per Session *
+                                </label>
+                                {{ form.price }}
+                                {% if form.price.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.price.errors.0 }}</div>
+                                {% endif %}
+                                <small class="d-block mt-2 text-muted">
+                                    Leave as 0 for free. Price can be per hour, session, or session depending on the
+                                    skill.
+                                </small>
+                            </div>
+
+                            <!-- Availability Status -->
+                            <div class="col-md-6 mb-4">
+                                <label for="{{ form.availability_status.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-toggle-on text-primary"></i> Availability Status *
+                                </label>
+                                {{ form.availability_status }}
+                                {% if form.availability_status.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.availability_status.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Contact Preference -->
+                        <div class="mb-4">
+                            <label for="{{ form.contact_preference.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-phone text-primary"></i> How Should People Contact You? *
+                            </label>
+                            {{ form.contact_preference }}
+                            {% if form.contact_preference.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.contact_preference.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="mb-4">
+                            <label for="{{ form.contact_info.id_for_label }}" class="form-label fw-bold">
+                                <i class="fas fa-envelope text-primary"></i> Contact Information *
+                            </label>
+                            {{ form.contact_info }}
+                            {% if form.contact_info.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.contact_info.errors.0 }}</div>
+                            {% endif %}
+                            <small class="d-block mt-2 text-muted">
+                                Provide your email, phone number, Discord handle, etc. - based on your contact
+                                preference.
+                            </small>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex gap-2 mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                <i class="fas fa-check-circle"></i>
+                                {% if skill %}Update Skill{% else %}Post Skill{% endif %}
+                            </button>
+                            <a href="{% if skill %}{% url 'skill_detail' skill.pk %}{% else %}{% url 'skill_list' %}{% endif %}"
+                                class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div class="alert alert-info" role="alert">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-lightbulb"></i> Tips for a Great Listing
+                            </h6>
+                            <ul class="mb-0 ms-3">
+                                <li>Be clear and specific about what you're teaching</li>
+                                <li>Include any requirements or prerequisites</li>
+                                <li>Mention the format (online, in-person, hybrid)</li>
+                                <li>Set realistic pricing - remember you're peer-to-peer!</li>
+                                <li>Update your availability status if you get too many requests</li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

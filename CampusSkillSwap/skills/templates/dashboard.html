@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Welcome Header -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-auto">
+            <div class="bg-primary text-white rounded-circle p-4"
+                style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user fa-3x"></i>
+            </div>
+        </div>
+        <div class="col">
+            <h1 class="fw-bold mb-1">Welcome, {{ user.first_name|default:user.username }}!</h1>
+            <p class="text-muted mb-0">
+                <i class="fas fa-star text-warning"></i>
+                Your Rating: <strong>{{ rating|default:"No reviews yet" }}</strong>
+            </p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'profile_edit' %}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+            <a href="{% url 'skill_create' %}" class="btn btn-success">
+                <i class="fas fa-plus-circle"></i> Post New Skill
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="stats-box">
+                <h3>{{ skills_count }}</h3>
+                <p class="mb-0">Skills Posted</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-box">
+                <h3>{{ pending_requests }}</h3>
+                <p class="mb-0">Pending Requests</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-box">
+                <h3>{{ my_bookings.count }}</h3>
+                <p class="mb-0">My Bookings</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-box">
+                <h3>{{ incoming_bookings.count }}</h3>
+                <p class="mb-0">Total Requests</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Incoming Booking Requests -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light border-bottom">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-inbox text-success"></i> Booking Requests for Your Skills
+                        {% if pending_requests %}
+                        <span class="badge bg-danger ms-2">{{ pending_requests }}</span>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if incoming_bookings %}
+                    <div class="list-group list-group-flush">
+                        {% for booking in incoming_bookings|slice:":5" %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="fw-bold mb-1">
+                                        <a href="{% url 'skill_detail' booking.skill.pk %}"
+                                            class="text-decoration-none">
+                                            {{ booking.skill.title }}
+                                        </a>
+                                    </h6>
+                                    <p class="text-muted small mb-1">
+                                        From: <strong>{{ booking.requester.username }}</strong>
+                                    </p>
+                                    <p class="text-muted small mb-2">
+                                        Requested: <i class="fas fa-calendar"></i> {{ booking.requested_date|date:"M d,
+                                        Y H:i" }}
+                                    </p>
+                                    <small class="text-muted">{{ booking.message|truncatewords:15 }}</small>
+                                </div>
+                                <span class="booking-status status-{{ booking.status }}">
+                                    {{ booking.get_status_display|truncatechars:20 }}
+                                </span>
+                            </div>
+                            <a href="{% url 'manage_booking' booking.pk %}" class="btn btn-sm btn-primary mt-2">
+                                <i class="fas fa-check"></i> Respond
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if incoming_bookings.count > 5 %}
+                    <a href="{% url 'incoming_bookings' %}" class="btn btn-outline-primary btn-sm w-100 mt-3">
+                        View All ({{ incoming_bookings.count }})
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-muted text-center py-4">
+                        <i class="fas fa-inbox"></i> No booking requests yet. Share your skills to get started!
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- My Bookings -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light border-bottom">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-calendar-check text-info"></i> My Booking Requests
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if my_bookings %}
+                    <div class="list-group list-group-flush">
+                        {% for booking in my_bookings|slice:":5" %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="fw-bold mb-1">
+                                        <a href="{% url 'skill_detail' booking.skill.pk %}"
+                                            class="text-decoration-none">
+                                            {{ booking.skill.title }}
+                                        </a>
+                                    </h6>
+                                    <p class="text-muted small mb-1">
+                                        Instructor: <strong>{{ booking.skill.owner.username }}</strong>
+                                    </p>
+                                    <p class="text-muted small">
+                                        <i class="fas fa-calendar"></i> {{ booking.requested_date|date:"M d, Y H:i" }}
+                                    </p>
+                                </div>
+                                <span class="booking-status status-{{ booking.status }}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </div>
+                            {% if booking.status == 'approved' %}
+                            <a href="{% url 'add_review' booking.skill.pk %}" class="btn btn-sm btn-warning mt-2">
+                                <i class="fas fa-star"></i> Leave Review
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if my_bookings.count > 5 %}
+                    <a href="{% url 'my_bookings' %}" class="btn btn-outline-primary btn-sm w-100 mt-3">
+                        View All ({{ my_bookings.count }})
+                    </a>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-muted text-center py-4">
+                        <i class="fas fa-search"></i> You haven't made any booking requests yet.
+                        <br>
+                        <a href="{% url 'skill_list' %}">Browse available skills</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Your Skills Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light border-bottom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fas fa-lightbulb text-warning"></i> Your Posted Skills ({{ skills_count }})
+                        </h5>
+                        <a href="{% url 'skill_create' %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus"></i> Post New
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if my_skills %}
+                    <div class="row">
+                        {% for skill in my_skills %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">
+                                        <a href="{% url 'skill_detail' skill.pk %}" class="text-decoration-none">
+                                            {{ skill.title }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        {{ skill.description|truncatewords:15 }}
+                                    </p>
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">{{ skill.get_category_display }}</span>
+                                        {% if skill.price > 0 %}
+                                        <span class="text-primary fw-bold">${{ skill.price }}</span>
+                                        {% else %}
+                                        <span class="badge bg-success">FREE</span>
+                                        {% endif %}
+                                    </div>
+                                    <small class="text-muted">
+                                        Requests: {{ skill.booking_requests.count }}
+                                        | Reviews: {{ skill.reviews.count }}
+                                    </small>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <a href="{% url 'skill_update' skill.pk %}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'skill_delete' skill.pk %}" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-5">
+                        <i class="fas fa-inbox"></i>
+                        <br>
+                        You haven't posted any skills yet.
+                        <br>
+                        <a href="{% url 'skill_create' %}">Post your first skill now!</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h1 class="fw-bold mb-2"><i class="fas fa-search"></i> Search Results</h1>
+        <p class="text-muted">
+            Found <strong>{{ results_count }}</strong> skill(s)
+            {% if query %} matching "<strong>{{ query }}</strong>"{% endif %}
+            {% if selected_category %} in <strong>{{ selected_category|default:"All Categories" }}</strong>{% endif %}
+        </p>
+    </div>
+
+    {% if skills %}
+    <div class="row">
+        {% for skill in skills %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm skill-card hover-shadow transition">
+                <div class="card-header bg-light">
+                    <span class="badge bg-primary">{{ skill.get_category_display }}</span>
+                    <span class="badge bg-secondary float-end">{{ skill.get_availability_status_display }}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">
+                        <a href="{% url 'skill_detail' skill.pk %}" class="text-decoration-none">{{ skill.title }}</a>
+                    </h5>
+                    <p class="card-text text-muted small">{{ skill.description|truncatewords:20 }}</p>
+                    <div class="mb-3">
+                        {% if skill.average_rating > 0 %}
+                        {% for i in "12345" %}
+                        {% if i|add:0 <= skill.average_rating %} <i class="fas fa-star text-warning"></i>
+                            {% else %}
+                            <i class="fas fa-star text-muted"></i>
+                            {% endif %}
+                            {% endfor %}
+                            <span class="fw-bold">{{ skill.average_rating }}</span>
+                            {% else %}
+                            <span class="text-muted small">No reviews</span>
+                            {% endif %}
+                    </div>
+                    <div>
+                        {% if skill.price > 0 %}
+                        <span class="text-primary fw-bold">${{ skill.price }}</span>
+                        {% else %}
+                        <span class="badge bg-success">FREE</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-sm btn-primary w-100">View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="fas fa-search fa-3x mb-3 d-block"></i>
+        <h5 class="fw-bold">No results found</h5>
+        <p class="text-muted">Try different search terms or browse all skills</p>
+        <a href="{% url 'skill_list' %}" class="btn btn-primary mt-3">Browse All Skills</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+Django==6.0.5
+asgiref==3.11.1
+crispy-bootstrap5==2026.3
+django-crispy-forms==2.6
+pillow==12.2.0
+python-dotenv==1.2.2
+langchain==1.2.12
+langchain-google-genai==4.2.1
+sqlparse==0.5.5
+tzdata==2026.2

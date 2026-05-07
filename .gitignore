@@ -1,0 +1,11 @@
+.venv/
+.env
+.git.backup/
+staticfiles/
+__pycache__/
+*.py[cod]
+db.sqlite3
+server.log
+server.err.log
+campus-skillswap.log
+campus-skillswap.err.log

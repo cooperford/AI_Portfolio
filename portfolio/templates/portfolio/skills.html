@@ -1,0 +1,28 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}Skills | Cooper Ford{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="eyebrow">Skills</p>
+            <h1>Skills</h1>
+            <p class="lead">Technical tools, analytical strengths, and workplace skills from my resume and current experience.</p>
+        </div>
+        <div class="skill-list">
+            {% for skill in skills %}
+                <span>{{ skill }}</span>
+            {% endfor %}
+        </div>
+        <div class="content-block">
+            <h2>Technical Focus</h2>
+            <p>Experience includes Microsoft Excel, Python-based web scraping, structured research data organization, basic R, basic Tableau, and basic UI Path.</p>
+        </div>
+        <div class="content-block">
+            <h2>Professional Strengths</h2>
+            <p>Peer tutoring, written reporting, weekly stakeholder communication, problem solving, resilience, and adapting quickly in team environments.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

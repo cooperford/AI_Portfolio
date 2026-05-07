@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<!-- ============================================================
+     HERO SECTION
+     ============================================================ -->
+<section class="bg-gradient-primary text-white py-5"
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-exchange-alt"></i> Campus SkillSwap
+        </h1>
+        <p class="lead mb-4">
+            Exchange skills with your peers. Learn guitar while teaching Python.
+            Share expertise and grow together as a community.
+        </p>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'skill_create' %}" class="btn btn-light btn-lg me-2 mb-2">
+            <i class="fas fa-plus-circle"></i> Post a Skill
+        </a>
+        <a href="{% url 'skill_list' %}" class="btn btn-outline-light btn-lg mb-2">
+            <i class="fas fa-search"></i> Browse Skills
+        </a>
+        {% else %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2 mb-2">
+            <i class="fas fa-user-plus"></i> Get Started
+        </a>
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg mb-2">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ============================================================
+     STATISTICS SECTION
+     ============================================================ -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="text-primary fw-bold">{{ total_skills }}</h3>
+                        <p class="text-muted mb-0">Available Skills</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="text-success fw-bold">{{ total_users }}</h3>
+                        <p class="text-muted mb-0">Active Students</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="text-warning fw-bold">{{ total_reviews }}</h3>
+                        <p class="text-muted mb-0">Verified Reviews</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">How It Works</h2>
+
+        <div class="row">
+            <div class="col-md-3 mb-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-plus fa-3x text-primary"></i>
+                </div>
+                <h5 class="fw-bold">1. Sign Up</h5>
+                <p class="text-muted">Create your account and set up your profile</p>
+            </div>
+
+            <div class="col-md-3 mb-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-lightbulb fa-3x text-success"></i>
+                </div>
+                <h5 class="fw-bold">2. Post Skills</h5>
+                <p class="text-muted">Share what you know and what you want to learn</p>
+            </div>
+
+            <div class="col-md-3 mb-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-handshake fa-3x text-warning"></i>
+                </div>
+                <h5 class="fw-bold">3. Connect</h5>
+                <p class="text-muted">Meet and book sessions with other students</p>
+            </div>
+
+            <div class="col-md-3 mb-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-star fa-3x text-danger"></i>
+                </div>
+                <h5 class="fw-bold">4. Review & Rate</h5>
+                <p class="text-muted">Share feedback and build trust in the community</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     LATEST SKILLS SECTION
+     ============================================================ -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-8">
+                <h2 class="fw-bold">Latest Skills</h2>
+                <p class="text-muted">Recently posted by our community</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{% url 'skill_list' %}" class="btn btn-primary">
+                    View All Skills <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        {% if skills %}
+        <div class="row">
+            {% for skill in skills %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <!-- Skill Card -->
+                <div class="card h-100 shadow-sm hover-shadow transition">
+                    <div class="card-body">
+                        <!-- Category Badge -->
+                        <span class="badge bg-primary mb-2">
+                            {{ skill.get_category_display }}
+                        </span>
+
+                        <!-- Title -->
+                        <h5 class="card-title fw-bold">
+                            <a href="{% url 'skill_detail' skill.pk %}" class="text-decoration-none">
+                                {{ skill.title }}
+                            </a>
+                        </h5>
+
+                        <!-- Description -->
+                        <p class="card-text text-muted small">
+                            {{ skill.description|truncatewords:20 }}
+                        </p>
+
+                        <!-- Rating -->
+                        <div class="mb-2">
+                            {% if skill.average_rating > 0 %}
+                            <i class="fas fa-star text-warning"></i>
+                            <span class="fw-bold">{{ skill.average_rating }}</span>
+                            <span class="text-muted small">({{ skill.reviews.count }} reviews)</span>
+                            {% else %}
+                            <span class="text-muted small">No reviews yet</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Price & Owner -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                {% if skill.price > 0 %}
+                                <strong class="text-primary">${{ skill.price }}/hour</strong>
+                                {% else %}
+                                <span class="badge bg-success">FREE</span>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">
+                                by <a href="{% url 'profile' skill.owner.username %}" class="text-decoration-none">{{
+                                    skill.owner.username }}</a>
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer with Button -->
+                    <div class="card-footer bg-transparent">
+                        <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-sm btn-primary w-100">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            No skills posted yet. Be the first to
+            <a href="{% url 'skill_create' %}">post a skill!</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ============================================================
+     FEATURES SECTION
+     ============================================================ -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Why Use SkillSwap?</h2>
+
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-graduation-cap fa-2x text-primary"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Learn for Free</h5>
+                        <p class="text-muted">
+                            Connect with peers offering free or affordable skill sessions.
+                            No expensive courses needed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-users fa-2x text-success"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Community Driven</h5>
+                        <p class="text-muted">
+                            Built by students for students. Share your knowledge and
+                            help others grow.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-check-circle fa-2x text-warning"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Verified Reviews</h5>
+                        <p class="text-muted">
+                            See authentic ratings and reviews from real users.
+                            Build trust in our community.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-calendar fa-2x text-danger"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold">Easy Scheduling</h5>
+                        <p class="text-muted">
+                            Browse available times, make booking requests, and manage
+                            your sessions all in one place.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CTA SECTION
+     ============================================================ -->
+{% if not user.is_authenticated %}
+<section class="bg-primary text-white py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3">Ready to Start Learning?</h2>
+        <p class="lead mb-4">Join our community of peer learners today!</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg">
+            <i class="fas fa-user-plus"></i> Create Account
+        </a>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

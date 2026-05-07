@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Requests - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="fas fa-inbox"></i> Booking Requests for Your Skills</h1>
+
+    {% if bookings %}
+    <div class="row">
+        {% for booking in bookings %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ booking.skill.title }}</h5>
+                    <p class="text-muted mb-2">
+                        Request from: <strong>{{ booking.requester.username }}</strong>
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-calendar"></i> {{ booking.requested_date|date:"M d, Y H:i" }}
+                    </p>
+                    <div class="bg-light p-2 rounded mb-3">
+                        <small>{{ booking.message|truncatewords:30 }}</small>
+                    </div>
+                    <span class="booking-status status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                    <a href="{% url 'manage_booking' booking.pk %}" class="btn btn-sm btn-primary float-end">Manage</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center py-5">
+        <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+        No booking requests yet. Share your skills to receive requests!
+        <br>
+        <a href="{% url 'skill_create' %}" class="btn btn-primary mt-3">Post a Skill</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'portfolio/base.html' %}
+
+{% block title %}LangChain AI Chatbot | Cooper Ford{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container narrow">
+        <a class="back-link" href="{% url 'portfolio:project_detail' 'langchain-chatbot' %}">Back to project</a>
+        <p class="eyebrow">Interactive Project</p>
+        <h1>LangChain AI Chatbot</h1>
+        <p class="lead">Ask a question and the LangChain agent will respond with a concise Gemini-powered answer.</p>
+
+        <div class="chat-panel">
+            <div class="chat-log" aria-live="polite">
+                {% if history %}
+                    {% for message in history %}
+                        <div class="chat-message {{ message.role }}">
+                            <strong>{% if message.role == 'user' %}You{% else %}Assistant{% endif %}</strong>
+                            <p>{{ message.content|linebreaksbr }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="chat-empty">
+                        <p>Start the conversation with a question about Python, data, AI, schoolwork, or anything else you want help thinking through.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if error %}
+                <div class="chat-error" role="alert">{{ error }}</div>
+            {% endif %}
+
+            <form class="chat-form" method="post">
+                {% csrf_token %}
+                <label class="sr-only" for="chat-message">Message</label>
+                <textarea id="chat-message" name="message" rows="3" placeholder="Type your message..." required></textarea>
+                <div class="chat-actions">
+                    <a class="button secondary" href="{% url 'portfolio:langchain_chatbot' %}?reset=1">Reset</a>
+                    <button class="button" type="submit">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

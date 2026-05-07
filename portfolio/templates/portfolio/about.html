@@ -1,0 +1,31 @@
+{% extends 'portfolio/base.html' %}
+{% load static %}
+
+{% block title %}About | Cooper Ford{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container about-grid">
+        <div>
+            <p class="eyebrow">About</p>
+            <h1>Cooper Ford</h1>
+            <p class="lead">Management Information Systems and Management student at Baylor University with a strong foundation in data analysis, Excel, Python-based research support, and peer tutoring.</p>
+        </div>
+        <figure class="headshot-frame">
+            <img src="{% static 'portfolio/img/cooper-headshot.png' %}" alt="Headshot of Cooper Ford">
+        </figure>
+    </div>
+    <div class="container narrow">
+        <div class="content-block">
+            <h2>Career Profile</h2>
+            <p>I am motivated by work that turns information into clearer decisions. Through research assistant work at Baylor's Hankamer School of Business, I gather research data with Python-based web scraping, organize findings in structured Excel files, and share weekly progress with faculty.</p>
+            <p>I also bring experience mentoring Baylor business students as a Software Applications Tutor, helping peers strengthen their Excel skills and identifying common learning challenges through written reports. I value communication, resilience, and practical problem solving in collaborative environments.</p>
+        </div>
+        <div class="content-block">
+            <h2>Education</h2>
+            <p><strong>Baylor University</strong> - Waco, Texas</p>
+            <p>Bachelor of Business Administration, Management Information Systems / Management. Expected May 2027. GPA: 3.45.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

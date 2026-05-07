@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Respond to Booking - Campus SkillSwap{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <h2 class="fw-bold mb-4"><i class="fas fa-reply"></i> Respond to Booking Request</h2>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="fw-bold mb-0">Booking Details</h6>
+                </div>
+                <div class="card-body">
+                    <p><strong>Skill:</strong> {{ booking.skill.title }}</p>
+                    <p><strong>From:</strong> {{ booking.requester.username }}</p>
+                    <p><strong>Requested:</strong> {{ booking.requested_date|date:"M d, Y H:i" }}</p>
+                    <p><strong>Message:</strong> {{ booking.message|truncatewords:30 }}</p>
+                </div>
+            </div>
+
+            <form method="POST" class="card shadow-sm">
+                {% csrf_token %}
+                <div class="card-body">
+                    <label class="form-label fw-bold">Your Response:</label>
+                    {{ form.status }}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-check"></i> Update Status
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -140,6 +140,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 WHITENOISE_ROOT = BASE_DIR / 'static'
+WHITENOISE_USE_FINDERS = True
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',

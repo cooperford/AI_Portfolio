@@ -21,6 +21,7 @@ from django.views.static import serve
 
 urlpatterns = [
     path('', include('portfolio.urls')),
+    path('campus-skill-swap/', include('skills.urls')),
     path('admin/', admin.site.urls),
     re_path(
         r'^static/(?P<path>.*)$',

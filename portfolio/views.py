@@ -28,7 +28,7 @@ PROJECTS = [
         'technologies': ['Django', 'Python', 'SQLite', 'Bootstrap 5', 'Crispy Forms', 'HTML', 'CSS'],
         'preview_label': 'Django Marketplace App',
         'source_url': 'https://github.com/cooperford/CampusSkillSwap',
-        'live_preview_url': 'http://127.0.0.1:8001/',
+        'live_preview_url': '/campus-skill-swap/',
         'highlights': [
             'User registration, login, logout, and profile management.',
             'Skill posting CRUD with categories, pricing, availability, and contact preferences.',

@@ -12,6 +12,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import OperationalError, ProgrammingError
 from django.db.models import Q
 from django.http import Http404
 from django.views.decorators.http import require_POST
@@ -120,18 +121,25 @@ def home_view(request):
     - All skills (ordered by newest)
     - Link to post a skill
     """
-    # Get all skills, ordered by newest first
-    skills = Skill.objects.filter(availability_status='available').order_by('-created_at')[:12]
-    
-    # Create search form (even if not submitted)
     search_form = SkillSearchForm()
-    
+
+    try:
+        skills = Skill.objects.filter(availability_status='available').order_by('-created_at')[:12]
+        total_skills = Skill.objects.count()
+        total_users = User.objects.count()
+        total_reviews = Review.objects.count()
+    except (OperationalError, ProgrammingError):
+        skills = []
+        total_skills = 0
+        total_users = 0
+        total_reviews = 0
+
     context = {
         'skills': skills,
         'search_form': search_form,
-        'total_skills': Skill.objects.count(),
-        'total_users': User.objects.count(),
-        'total_reviews': Review.objects.count(),
+        'total_skills': total_skills,
+        'total_users': total_users,
+        'total_reviews': total_reviews,
     }
     return render(request, 'home.html', context)
 
